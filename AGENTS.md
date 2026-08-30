@@ -23,7 +23,7 @@
 
 ## Problemas Conocidos
 
-- `services/cv_evaluator.py:35-37` tiene errores de tipeo en el fallback de error: `fotalezas` → `fortalezas`, `porcetaje_ajuste` → `porcentaje_ajuste`.
+- No hay problemas conocidos actualmente.
 
 ## Seguridad
 

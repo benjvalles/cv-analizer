@@ -1,6 +1,10 @@
 import os
+from typing import cast
+
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
+from pydantic import SecretStr
+
 from models.cv_model import AnalisisCV
 from prompts.cv_prompts import crear_sistema_prompts
 
@@ -9,7 +13,7 @@ load_dotenv()
 def crear_evaluador_cv():
     modelo_base = ChatOpenAI(
         model=os.getenv("LLM_MODEL", "gpt-4o-mini"),
-        api_key=os.getenv("OPENAI_API_KEY"),
+        api_key=SecretStr(os.getenv("OPENAI_API_KEY", "")),
         base_url=os.getenv("LLM_BASE_URL"),
         temperature=0.2
     )
@@ -24,10 +28,10 @@ def evaluar_candidato(texto_cv: str, descripcion_puesto: str) -> AnalisisCV:
     try:
         cadena_evaluacion = crear_evaluador_cv()
 
-        resultado = cadena_evaluacion.invoke({
+        resultado = cast(AnalisisCV, cadena_evaluacion.invoke({
             "texto_cv": texto_cv,
             "descripcion_puesto": descripcion_puesto
-        })
+        }))
 
         return resultado
     
@@ -38,7 +42,7 @@ def evaluar_candidato(texto_cv: str, descripcion_puesto: str) -> AnalisisCV:
             habilidades_clave=["Error al procesar CV"],
             education="No se puede determinar.",
             experiencia_relevante="Error durante el análisis.",
-            fotalezas=["Requiere revisión manual del CV"],
+            fortalezas=["Requiere revisión manual del CV"],
             areas_mejora=["Verificar formato y legibilidad del PDF"],
-            porcetaje_ajuste=0
+            porcentaje_ajuste=0
         )
